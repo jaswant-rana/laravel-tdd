@@ -5,7 +5,11 @@ namespace Tests\Unit;
 use Tests\ParentTestClass;
 use App\Components\CustomQueryBuilder;
 use \Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\User;
+use App\
+{
+    User,
+    Product
+};
 
 class UserTest extends ParentTestClass
 {
@@ -16,6 +20,7 @@ class UserTest extends ParentTestClass
     {
         $user = factory(User::class)->create();
         $this->assertInstanceOf(User::class, $user);
+        return $user;
     }
 
     public function testCreateUserWithInvalidEmail()
@@ -30,5 +35,14 @@ class UserTest extends ParentTestClass
         $this->assertArrayHasKey('name', $user);
         $this->assertArrayHasKey('password', $user);
     }    
+    
+    /**
+     * @depends testCreateUser
+     */
+    public function testCreateProductWithUserId($user)
+    {
+        $product = factory(Product::class)->create(['user_id' => $user->id]);
+        $this->assertInstanceOf(Product::class, $product);
+    }
 
 }
